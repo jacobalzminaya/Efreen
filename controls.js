@@ -15,9 +15,27 @@ function toggleMouse() {
     const overlay = document.getElementById('mouse-overlay');
     const btn = document.getElementById('mouseBtn');
     const touchZone = document.getElementById('manual-touch-zone'); // Contenedor UP/DOWN
+    const terminal = document.getElementById('main-terminal'); // El contenedor principal que se adaptará
 
     if (mouseEnabled) {
         // --- ESTADO ACTIVO ---
+        
+        // A. SOLICITAR PANTALLA COMPLETA (Adaptación al dispositivo)
+        if (terminal) {
+            if (terminal.requestFullscreen) {
+                terminal.requestFullscreen();
+            } else if (terminal.webkitRequestFullscreen) { // iOS/Safari
+                terminal.webkitRequestFullscreen();
+            } else if (terminal.msRequestFullscreen) {
+                terminal.msRequestFullscreen();
+            }
+            // Añadimos una clase para que el CSS sepa que debe estirarse al 100%
+            terminal.style.width = "100vw";
+            terminal.style.height = "100vh";
+            terminal.style.maxWidth = "none";
+            terminal.style.margin = "0";
+        }
+
         if(overlay) overlay.classList.add('active-radar');
         
         if(btn) {
@@ -32,10 +50,28 @@ function toggleMouse() {
             touchZone.style.display = "flex"; 
         }
 
-        console.log("🚀 Radar iniciado: Botones de entrada activados.");
+        console.log("🚀 Radar iniciado: Adaptando interfaz al dispositivo.");
 
     } else {
         // --- ESTADO INACTIVO ---
+        
+        // B. SALIR DE PANTALLA COMPLETA
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+
+        // Restaurar tamaño original (según tus estilos base)
+        if (terminal) {
+            terminal.style.width = ""; 
+            terminal.style.height = "";
+            terminal.style.maxWidth = "";
+            terminal.style.margin = "";
+        }
+
         if(overlay) overlay.classList.remove('active-radar');
         
         if(btn) {
@@ -55,6 +91,11 @@ function toggleMouse() {
     
     // 4. Actualizar visualización de secuencia
     if(typeof updateSymbols === 'function') updateSymbols();
+
+    // 5. Re-ajustar el Canvas (si existe) para que no se vea estirado
+    if(typeof initCanvas === 'function') {
+        setTimeout(initCanvas, 300); // Pequeño delay para esperar al cambio de pantalla
+    }
 }
 
 // --- FUNCIÓN FLEX (CON AUTO-APAGADO DE NEURAL) ---
