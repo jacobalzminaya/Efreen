@@ -15,32 +15,20 @@ function toggleMouse() {
     const overlay = document.getElementById('mouse-overlay');
     const btn = document.getElementById('mouseBtn');
     const touchZone = document.getElementById('manual-touch-zone'); // Contenedor UP/DOWN
-    const terminal = document.getElementById('main-terminal'); // El contenedor principal que se adaptará
 
     if (mouseEnabled) {
         // --- ESTADO ACTIVO ---
-        
-        // A. SOLICITAR PANTALLA COMPLETA (Adaptación al dispositivo)
-        if (terminal) {
-            if (terminal.requestFullscreen) {
-                terminal.requestFullscreen();
-            } else if (terminal.webkitRequestFullscreen) { // iOS/Safari
-                terminal.webkitRequestFullscreen();
-            } else if (terminal.msRequestFullscreen) {
-                terminal.msRequestFullscreen();
-            }
-            // Añadimos una clase para que el CSS sepa que debe estirarse al 100%
-            terminal.style.width = "100vw";
-            terminal.style.height = "100vh";
-            terminal.style.maxWidth = "none";
-            terminal.style.margin = "0";
-        }
-
         if(overlay) overlay.classList.add('active-radar');
         
         if(btn) {
             btn.classList.add('radar-on');
             btn.innerText = "SENSOR ACTIVO";
+            
+            // --- CAMBIO DE COLOR QUIRÚRGICO (ACTIVO) ---
+            btn.style.backgroundColor = "var(--up-neon)"; 
+            btn.style.color = "#000";
+            btn.style.boxShadow = "0 0 15px var(--up-neon)";
+            btn.style.border = "none";
         }
         
         // MOSTRAR BOTONES UP/DOWN (Añade clase para flex horizontal)
@@ -50,33 +38,21 @@ function toggleMouse() {
             touchZone.style.display = "flex"; 
         }
 
-        console.log("🚀 Radar iniciado: Adaptando interfaz al dispositivo.");
+        console.log("🚀 Radar iniciado: Botones de entrada activados.");
 
     } else {
         // --- ESTADO INACTIVO ---
-        
-        // B. SALIR DE PANTALLA COMPLETA
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            }
-        }
-
-        // Restaurar tamaño original (según tus estilos base)
-        if (terminal) {
-            terminal.style.width = ""; 
-            terminal.style.height = "";
-            terminal.style.maxWidth = "";
-            terminal.style.margin = "";
-        }
-
         if(overlay) overlay.classList.remove('active-radar');
         
         if(btn) {
             btn.classList.remove('radar-on');
             btn.innerText = "INICIAR SENSOR RADAR";
+            
+            // --- RESTAURAR COLOR ORIGINAL (INACTIVO) ---
+            btn.style.backgroundColor = "var(--accent)";
+            btn.style.color = "#fff";
+            btn.style.boxShadow = "none";
+            btn.style.border = "none";
         }
         
         // OCULTAR BOTONES UP/DOWN
@@ -91,11 +67,6 @@ function toggleMouse() {
     
     // 4. Actualizar visualización de secuencia
     if(typeof updateSymbols === 'function') updateSymbols();
-
-    // 5. Re-ajustar el Canvas (si existe) para que no se vea estirado
-    if(typeof initCanvas === 'function') {
-        setTimeout(initCanvas, 300); // Pequeño delay para esperar al cambio de pantalla
-    }
 }
 
 // --- FUNCIÓN FLEX (CON AUTO-APAGADO DE NEURAL) ---
@@ -495,4 +466,56 @@ function cycleRisk() {
     if(typeof AudioEngine !== 'undefined') AudioEngine.play("CLICK");
     
     console.log(`⚖️ RIESGO V23: Nivel ${riskLevel} activo`);
+}
+
+
+
+
+
+
+// --- NUEVA FUNCIÓN: ADAPTAR INTERFAZ AL DISPOSITIVO ---
+function toggleAdaptativeView() {
+    const terminal = document.getElementById('main-terminal');
+    
+    if (!document.fullscreenElement) {
+        // Entrar en modo Adaptativo (Pantalla Completa)
+        if (terminal.requestFullscreen) {
+            terminal.requestFullscreen();
+        } else if (terminal.webkitRequestFullscreen) { // iOS/Safari
+            terminal.webkitRequestFullscreen();
+        }
+        
+        terminal.classList.add('terminal-fullscreen');
+        console.log("📱 Interfaz adaptada al dispositivo.");
+    } else {
+        // Salir del modo Adaptativo
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+        terminal.classList.remove('terminal-fullscreen');
+    }
+    
+    // Forzar redibujado del gráfico para evitar distorsión
+    setTimeout(() => {
+        if(typeof initCanvas === 'function') initCanvas();
+    }, 300);
+}
+
+// --- NUEVA FUNCIÓN: REINICIO TOTAL ---
+function hardResetApp() {
+    if (confirm("⚠️ ¿ADVERTENCIA: Reiniciar todo el sistema? Se borrarán datos temporales.")) {
+        // 1. Limpiar todos los intervalos activos
+        if (countdownInterval) clearInterval(countdownInterval);
+        
+        // 2. Limpiar Storage si es necesario (Opcional: puedes comentar esto si quieres guardar historial)
+        // localStorage.clear(); 
+
+        // 3. Efecto visual de apagado
+        document.body.style.opacity = "0";
+        
+        // 4. Recarga total de la aplicación
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+    }
 }
