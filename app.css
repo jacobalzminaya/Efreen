@@ -259,3 +259,27 @@ button, .btn, .feed-btn, .touch-trigger {
     z-index: 1000;
     border: 1px solid var(--accent);
 }
+/* Clase que se activa con el radar */
+.fullscreen-adaptive {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: env(safe-area-inset-top) 10px env(safe-area-inset-bottom) 10px;
+}
+
+/* Ajuste para que los gráficos y botones crezcan proporcionalmente */
+.fullscreen-adaptive #flow-chart {
+    flex: 1; /* Hace que el gráfico ocupe el espacio sobrante */
+    width: 100% !important;
+}
+
+/* Evita que el body haga scroll mientras el radar está activo */
+body:has(.fullscreen-adaptive) {
+    overflow: hidden;
+}
