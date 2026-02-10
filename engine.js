@@ -1,4 +1,4 @@
-// engine.js - Quantum Alpha PRO v22 | Ultimate Edition
+// engine.js - Quantum Alpha PRO v22 | Ultimate Edition - MODIFICADO
 
 const AudioEngine = {
     ctx: null,
@@ -8,24 +8,39 @@ const AudioEngine = {
     async play(type) {
         this.init();
         if (this.ctx.state === 'suspended') await this.ctx.resume();
+        
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.connect(gain); 
         gain.connect(this.ctx.destination);
 
         if(type === "CLICK") {
+            // SONIDO DE BOTÓN: Onda senoidal (suave), frecuencia alta y muy corto
+            osc.type = 'sine';
             osc.frequency.setValueAtTime(1200, this.ctx.currentTime);
             gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
             osc.start(); 
             osc.stop(this.ctx.currentTime + 0.03);
         } else {
-            // Audio para Señales de COMPRA o VENTA
-            osc.frequency.setValueAtTime(type === "COMPRA" ? 880 : 330, this.ctx.currentTime);
-            gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.6);
+            // SONIDO DE TENDENCIA AFIRMADA: Onda triangular (más rica) y efecto de barrido
+            osc.type = 'triangle';
+            
+            // Frecuencia inicial según tendencia
+            const freqInicio = (type === "COMPRA") ? 660 : 440;
+            const freqFinal = (type === "COMPRA") ? 990 : 220; // Sube si es compra, baja si es venta
+            
+            osc.frequency.setValueAtTime(freqInicio, this.ctx.currentTime);
+            // Crea un efecto de "despegue" o "caída" en el sonido
+            osc.frequency.exponentialRampToValueAtTime(freqFinal, this.ctx.currentTime + 0.5);
+
+            gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.7);
+            
             osc.start(); 
-            osc.stop(this.ctx.currentTime + 0.6);
+            osc.stop(this.ctx.currentTime + 0.7);
         }
+
+        // Mantengo tu lógica de vibración original
         if(navigator.vibrate) navigator.vibrate(type === "COMPRA" ? [30, 10, 30] : [70]);
     }
 };
