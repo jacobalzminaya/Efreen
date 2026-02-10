@@ -28,32 +28,48 @@
         </div>
 <div class="data-visualization" style="
     position: relative; 
-    height: 50px; 
     display: flex; 
     flex-direction: column; 
-    justify-content: space-between; 
-    overflow: hidden; 
     background: rgba(0,0,0,0.3); 
     border-radius: 8px; 
     border: 1px solid var(--border); 
-    padding: 8px 0;
+    overflow: hidden;
+    margin-top: 15px;
 ">
-    <canvas id="flow-chart" style="
-        flex-grow: 1; 
-        width: 100%; 
-        max-height: 70px; 
-        filter: drop-shadow(0 0 8px var(--accent));
-    "></canvas>
+    <div style="height: 55px; width: 100%; position: relative; display: flex; align-items: center;">
+        <canvas id="flow-chart" style="
+            width: 100%; 
+            height: 100%; 
+            filter: drop-shadow(0 0 8px var(--accent));
+        "></canvas>
+    </div>
     
-    <div class="input-track" id="symbols-track" style="
-        background: rgba(255,255,255,0.05); 
-        border: none; 
-        height: 22px; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center;
-    ">
-        <span style="color: var(--text-dim); font-size: 8px; letter-spacing: 2px;">SISTEMA DE ADN ACTIVO</span>
+    <div style="display: flex; height: 28px; border-top: 1px solid rgba(255,255,255,0.05);">
+        
+        <div class="input-track" id="symbols-track" style="
+            flex: 3; 
+            background: rgba(255,255,255,0.03); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        ">
+            <span style="color: var(--text-dim); font-size: 8px; letter-spacing: 1px;">SISTEMA DE ADN ACTIVO</span>
+        </div>
+
+        <div style="flex: 1; display: flex; gap: 4px; padding: 3px; background: rgba(0,0,0,0.4); margin-left: 12px;">
+    <button onclick="toggleAdaptativeView()" class="btn" style="
+        flex: 1; background: var(--accent); color: #fff; 
+        font-size: 10px; font-weight: bold; border: none; border-radius: 3px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+    ">📱</button>
+    
+    <button onclick="hardResetApp()" class="btn" style="
+        flex: 1; background: #1a1a1a; color: var(--down-neon); 
+        font-size: 10px; font-weight: bold; border: 1px solid var(--down-neon); border-radius: 3px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+    ">🔄</button>
+</div>
     </div>
 </div>
 
