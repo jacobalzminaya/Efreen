@@ -7,6 +7,21 @@ window.addEventListener('DOMContentLoaded', () => {
     loadConfig();
     initCanvas(); 
     
+    // === DETECCIÓN AUTOMÁTICA DE MÓVIL ===
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                     || window.innerWidth <= 768; // También detecta por ancho de pantalla
+
+    if (isMobile) {
+        console.log("📱 Dispositivo móvil detectado. Activando modo adaptativo...");
+        // Usamos un pequeño delay para asegurar que el DOM esté totalmente listo
+        setTimeout(() => {
+            if (typeof toggleAdaptativeView === 'function') {
+                toggleAdaptativeView();
+            }
+        }, 500);
+    }
+    // =====================================
+    
     const hSaved = localStorage.getItem('tradeHistory');
     if(hSaved) { 
         tradeHistory = JSON.parse(hSaved); 
