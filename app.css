@@ -171,7 +171,9 @@ button, .btn, .feed-btn, .touch-trigger {
     height: 80px;
     margin-top: 10px;
 }
-
+#mouseBtn {
+    transition: all 0.3s ease; /* Esto hace que el cambio de color sea suave */
+}
 #manual-touch-zone.active-radar-ui { display: flex !important; }
 
 .touch-trigger {
