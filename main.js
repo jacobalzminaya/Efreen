@@ -5,32 +5,6 @@ let lastPowerSnapshot = 0; // Captura la fuerza exacta al momento de la señal
 
 window.addEventListener('DOMContentLoaded', () => {
     loadConfig();
-
-    // === PERSISTENCIA DE CONFIGURACIÓN (TIEMPO Y PLATAFORMA) ===
-    
-    // Recuperar Segundos guardados
-    const savedTime = localStorage.getItem('selectedTime');
-    if (savedTime) {
-        window.selectedTime = parseInt(savedTime);
-    }
-
-    // Recuperar Plataforma (Celular/Desktop)
-    const savedPlatform = localStorage.getItem('selectedPlatform');
-    if (savedPlatform === 'mobile') {
-        // Ocultar el selector negro inicial si ya existe una preferencia móvil
-        const selector = document.getElementById('device-selector');
-        if (selector) selector.style.display = 'none';
-        
-        // Forzar la vista móvil inmediatamente
-        setTimeout(() => {
-            if (typeof forceMobileView === 'function') {
-                forceMobileView();
-                updateToggleButtonUI('mobile');
-            }
-        }, 100); 
-    }
-    // ==========================================================
-
     // 1. Al cargar, NO refrescamos los botones inmediatamente para dejar que se vea "CALIBRANDO"
     // refreshVisualButtons(); <-- Comentado o eliminado si quieres que el HTML mande al inicio
     initCanvas(); 
@@ -41,20 +15,12 @@ window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         if (typeof refreshVisualButtons === 'function') {
             refreshVisualButtons(); 
-
-            // Aplicar visualmente el botón de tiempo recuperado
-            if (savedTime) {
-                const btn = document.getElementById(`t${savedTime}`);
-                if (btn) btn.classList.add('active');
-            }
-
             console.log("🎯 Calibración Finalizada: Nivel 3 Sniper Activado");
             
             // Sonido de confirmación si existe el motor de audio
             if(typeof AudioEngine !== 'undefined') AudioEngine.play("CLICK");
         }
     }, 1800); 
-});
     // ====================================================
 
     // === SISTEMA DE PLATAFORMA Y PERSISTENCIA ===
